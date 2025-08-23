@@ -74,8 +74,10 @@ make seed
 
 # 4) Sanity check counts
 make count
+
 # You should see a total of 16,283 points
 
 # 5) Open the UI
 open http://localhost:8501
+
 # (Windows: start http://localhost:8501)
