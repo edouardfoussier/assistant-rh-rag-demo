@@ -8,8 +8,7 @@ It demonstrates the core components of a RAG pipeline: retrieval, reranking, and
 - **Candidate-K**: how many candidates to fetch initially  
 - **Reranker**: toggle on/off for higher accuracy vs. speed  
 
-[Insert screenshot of the UI here]
-
+![UI Screenshot](screenshot_demo.png)
 ---
 
 ## 🚀 Features
