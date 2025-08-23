@@ -14,7 +14,9 @@ It demonstrates the core components of a RAG pipeline: retrieval, reranking, and
 
 ## 🚀 Features
 
-- **Data sources**: public datasets from [AgentPublic’s Mediatech](https://huggingface.co/datasets/AgentPublic/Mediatech) (*travail-emploi* and *service-public*).  
+- **Data sources**: based on public datasets from [AgentPublic’s Mediatech](https://huggingface.co/datasets/AgentPublic/Mediatech), with cleaned subsets I prepared:
+    - [`travail-emploi-clean`](https://huggingface.co/datasets/edouardfoussier/travail-emploi-clean)  
+    - [`service-public-filtered`](https://huggingface.co/datasets/edouardfoussier/service-public-filtered)  
 - **Vector store**: [Qdrant](https://qdrant.tech) for storing & searching embeddings.  
 - **Retriever + Reranker**:  
   - Retriever = fast semantic search using embeddings.  
