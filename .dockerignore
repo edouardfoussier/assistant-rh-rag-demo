@@ -1,0 +1,6 @@
+.git
+**/__pycache__/
+**/*.pyc
+rag_app/data/*
+logs/*
+.env

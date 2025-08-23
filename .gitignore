@@ -1,0 +1,9 @@
+.env
+logs/
+rag_app/data/*
+!rag_app/data/.gitkeep
+__pycache__/
+*.pyc
+*.DS_Store
+*.parquet
+*.csv
