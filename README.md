@@ -14,7 +14,7 @@ It demonstrates the core components of a RAG pipeline: retrieval, reranking, and
 
 ## 🚀 Features
 
-- **Data sources**: based on public datasets from [AgentPublic’s Mediatech](https://huggingface.co/datasets/AgentPublic/Mediatech), with cleaned subsets I prepared:
+- **Data sources**: built on top of [AgentPublic’s Mediatech](https://huggingface.co/datasets/AgentPublic/Mediatech), with curated subsets I shared on Hugging Face 🤗 :
     - [`travail-emploi-clean`](https://huggingface.co/datasets/edouardfoussier/travail-emploi-clean)  
     - [`service-public-filtered`](https://huggingface.co/datasets/edouardfoussier/service-public-filtered)  
 - **Vector store**: [Qdrant](https://qdrant.tech) for storing & searching embeddings.  
@@ -28,7 +28,7 @@ It demonstrates the core components of a RAG pipeline: retrieval, reranking, and
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Python, FastAPI (internal utilities), Streamlit for UI  
+- **Backend**: Python, Streamlit for UI  
 - **Vector DB**: Qdrant  
 - **Models**: Sentence-Transformers for embeddings, optional reranker, LLM via API  
 - **Infra**: Docker & docker-compose  
@@ -57,6 +57,10 @@ It demonstrates the core components of a RAG pipeline: retrieval, reranking, and
 ## ⚡ Quickstart
 
 ```bash
+# 0) Configure environment variables
+cp .env.example .env
+# Edit .env and set your LLM_API_KEY (e.g. OpenAI key), and optionally LLM_MODEL / LLM_BASE_URL.
+
 # 1) Start services
 docker compose up -d --build
 
@@ -68,6 +72,8 @@ make seed
 
 # 4) Sanity check counts
 make count
+# You should get a total of 16283 points
 
 # 5) Open the UI
 open http://localhost:8501
+# (Windows: start http://localhost:8501)
