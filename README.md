@@ -59,10 +59,12 @@ It demonstrates the core components of a RAG pipeline: retrieval, reranking, and
 ```bash
 # 0) Configure environment variables
 cp .env.example .env
-# Edit .env and set your LLM_API_KEY (e.g. OpenAI key), and optionally LLM_MODEL / LLM_BASE_URL.
+
+# Edit .env and set your LLM_API_KEY (e.g. OpenAI key)
+# Optionally adjust LLM_MODEL / LLM_BASE_URL.
 
 # 1) Start services
-docker compose up -d --build
+make up
 
 # 2) Download cleaned datasets (from my HF repos)
 make data
@@ -72,7 +74,7 @@ make seed
 
 # 4) Sanity check counts
 make count
-# You should get a total of 16283 points
+# You should see a total of 16,283 points
 
 # 5) Open the UI
 open http://localhost:8501
