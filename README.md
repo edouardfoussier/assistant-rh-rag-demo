@@ -3,20 +3,18 @@
 A minimal **Retrieval-Augmented Generation (RAG)** assistant for HR-related questions, built as a portfolio project.  
 It demonstrates the core components of a RAG pipeline: retrieval, reranking, and answer generation with a Large Language Model (LLM).
 
-📊 Parameters you can tune
+📊 Parameters you can tune (in the sidebar):
+- **Top-K**: how many passages to keep after reranking  
+- **Candidate-K**: how many candidates to fetch initially  
+- **Reranker**: toggle on/off for higher accuracy vs. speed  
 
-In the sidebar of the UI:
-	•	Top-K: how many passages to keep after reranking
-	•	Candidate-K: how many candidates to fetch initially
-	•	Reranker: toggle on/off for higher accuracy vs. speed
-
-👉 Live demo: [rag.edouardfoussier.com](https://rag.edouardfoussier.com)  
+[Insert screenshot of the UI here]
 
 ---
 
 ## 🚀 Features
 
-- **Data sources**: public datasets from [AgentPublic’s Mediatech](https://huggingface.co/datasets/AgentPublic/Mediatech) (articles from *travail-emploi* and *service-public*).  
+- **Data sources**: public datasets from [AgentPublic’s Mediatech](https://huggingface.co/datasets/AgentPublic/Mediatech) (*travail-emploi* and *service-public*).  
 - **Vector store**: [Qdrant](https://qdrant.tech) for storing & searching embeddings.  
 - **Retriever + Reranker**:  
   - Retriever = fast semantic search using embeddings.  
@@ -35,41 +33,39 @@ In the sidebar of the UI:
 
 ---
 
+## ⚙️ How it works (under the hood)
+
+1. **Chunking & Embedding**  
+   - Articles are split into small “chunks” of text.  
+   - Each chunk is turned into a vector (numeric representation of its meaning).  
+   - Stored in a **vector database (Qdrant)**.  
+
+2. **Retrieval & Reranking**  
+   - When you ask a question, it’s also turned into a vector.  
+   - The **retriever** finds the most semantically similar chunks.  
+   - (Optional) A **reranker** reorders them for higher precision.  
+
+3. **Answer Generation**  
+   - The top chunks are passed to a **Large Language Model (LLM)**.  
+   - The LLM generates an answer, grounding it in the retrieved passages.  
+   - Sources are cited inline with clickable references.  
+
+---
+
 ## ⚡ Quickstart
 
-Clone and run with Docker:
-
 ```bash
-git clone https://github.com/yourname/rag-rh-demo.git
-cd rag-rh-demo
+# 1) Start services
+docker compose up -d --build
 
-# Copy environment variables
-cp .env.example .env
+# 2) Download cleaned datasets (from my HF repos)
+make data
 
-# Start services
-docker compose up --build
+# 3) Ingest into Qdrant
+make seed
 
-```bash
-# 1) Clone + env
-cp .env.example .env
-# Edit .env (choose your LLM: OpenAI or Ollama, see below)
+# 4) Sanity check counts
+make count
 
-# 2) Start services
-docker compose up -d
-
-# 3) Ingest data (parquet already contains embeddings)
-docker compose exec app python /app/scripts/seed_qdrant.py \
-  --parquet /app/rag_app/data/service-public.clean.parquet \
-  --qdrant-url http://qdrant:6333 \
-  --collection rag_rh_chunks \
-  --recreate
-
-
-  ⚠️ Disclaimer
-
-This is a demo / MVP, not production-ready.
-It provides public information only — not legal or HR advice.
-
-⸻
-
-👨‍💻 Built by Edouard Foussier as a RAG project portfolio.
+# 5) Open the UI
+open http://localhost:8501
