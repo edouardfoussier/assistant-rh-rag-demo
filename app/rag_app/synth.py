@@ -5,6 +5,7 @@ import textwrap
 import requests
 from typing import Any, Dict, List, Tuple, Optional
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv(override=True)
 
@@ -13,6 +14,14 @@ LLM_BASE_URL    = os.getenv("LLM_BASE_URL", "http://localhost:8080/v1").rstrip("
 LLM_MODEL       = os.getenv("LLM_MODEL", "gpt-4o-mini")
 LLM_MAX_TOKENS  = int(os.getenv("LLM_MAX_TOKENS", "512"))
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.1"))
+
+_MONTHS_FR = {
+    1:"janvier", 2:"février", 3:"mars", 4:"avril", 5:"mai", 6:"juin",
+    7:"juillet", 8:"août", 9:"septembre", 10:"octobre", 11:"novembre", 12:"décembre"
+}
+def today_fr():
+    d = date.today()
+    return f"{d.day} {_MONTHS_FR[d.month]} {d.year}"
 
 def _get_api_key() -> Optional[str]:
     return os.getenv("LLM_API_KEY")
@@ -97,11 +106,19 @@ def build_context(passages: List[Any], per_passage_chars: int = 900) -> str:
         blocks.append(f"[{i}] {title}\nURL: {url}\n{body}")
     return "\n\n".join(blocks)
 
-SYSTEM_PROMPT = """Tu es un assistant RH de la fonction publique française.
-- Réponds de manière factuelle et concise.
-- Cite tes sources en fin de phrase avec le format [1], [2]… en te basant sur l’index de contexte.
-- Si l’information n’est pas dans les sources, réponds : “Je ne sais pas”.
-- Ne fabrique pas de liens ni de références.
+SYSTEM_PROMPT = """Tu es un assistant RH chargé de répondre à des questions dans le domaine des ressources humaines en t'appuyant sur les sources fournies.\n
+        La date d'aujourd'hui est : {today} (au format AAAA-MM-JJ).\n\n
+        ⚠️ Consigne temporelle : Les textes sources peuvent avoir été rédigés avant aujourd'hui 
+        et mentionner des changements à venir. Interprète ces formulations en fonction de la date actuelle. 
+        Si une mesure annoncée est déjà en vigueur aujourd'hui, écris-la au présent ou au passé, 
+        jamais au futur.\n\n"
+        
+        Consignes :\n
+        - Réponds de manière factuelle, concise et polie (vouvoiement).\n
+        - Quand tu affirmes un fait, cite tes sources en fin de phrase avec le format [1], [2]… en te basant sur l'index de ces sources (ex: [1] est la source 1, [2] est la source 2, etc.)\n\n
+        - Si l'information n'est pas présente dans les sources, réponds : \"Je suis navré, je n'ai pas trouvé la réponse à cette question\".\n\n
+        - Si la question est mal formulée, réponds : \"Je ne comprends pas la question. Pourriez-vous reformuler ?\"\n\n
+        - Ne fabrique pas de liens ni de références.\n\n
 """
 
 def answer(query: str, passages: List[Any], stream: bool = False) -> str:
@@ -124,15 +141,15 @@ def answer(query: str, passages: List[Any], stream: bool = False) -> str:
                 " dans ton .env")
 
     context = build_context(passages)
+    system_prompt = SYSTEM_PROMPT.format(today=today_fr())
+
     user_prompt = textwrap.dedent(f"""\
     Question: {query}
 
     Sources (indexées) :
     {context}
 
-    Consignes:
-    - Utilise uniquement ces sources.
-    - Ajoute les références [n] exactes aux phrases concernées.
+    Rédigez la réponse aujourd'hui en citant les indices [n] correspondants.
     """)
 
     payload = {
@@ -140,7 +157,7 @@ def answer(query: str, passages: List[Any], stream: bool = False) -> str:
         "temperature": LLM_TEMPERATURE,
         "max_tokens": LLM_MAX_TOKENS,
         "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
     }
