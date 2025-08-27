@@ -1,4 +1,4 @@
-# 🔎 RAG-powered HR Assistant Demo (Under the hood)
+# 🔎 RAG HR Assistant Demo (Under the hood)
 
 A minimal **Retrieval-Augmented Generation (RAG)** assistant for HR-related questions, built as a portfolio project.  
 It demonstrates the core components of a RAG pipeline: retrieval, reranking, and answer generation with a Large Language Model (LLM).
