@@ -244,7 +244,7 @@ sugs = st.session_state["suggestions"]
 st.sidebar.markdown("""
 <div class="sidebar-footer">
     ℹ️ Public information sourced from
-    <a href="https://huggingface.co/datasets/AgentPublic/Mediatech" target="_blank">
+    <a href="https://huggingface.co/collections/AgentPublic/mediatech-68309e15729011f49ef505e8" target="_blank">
         AgentPublic's Mediatech on HF 🤗
     </a><br>
     <span style="font-size:0.75em;">
